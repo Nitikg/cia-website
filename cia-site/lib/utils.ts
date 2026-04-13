@@ -27,13 +27,12 @@ export function formatCurrency(amount: number): string {
 }
 
 /**
- * Formats a Firestore Timestamp or Date to a readable string.
+ * Formats an ISO date string to a readable string.
  */
-export function formatDate(date: Date | { toDate: () => Date }): string {
-  const d = 'toDate' in date ? date.toDate() : date
+export function formatDate(date: string): string {
   return new Intl.DateTimeFormat('en-IN', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
-  }).format(d)
+  }).format(new Date(date))
 }

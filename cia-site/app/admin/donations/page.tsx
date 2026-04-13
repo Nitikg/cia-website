@@ -10,7 +10,14 @@ async function getDonations(): Promise<Donation[]> {
     .orderBy('createdAt', 'desc')
     .limit(100)
     .get()
-  return snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Donation[]
+  return snap.docs.map((doc) => {
+    const data = doc.data()
+    return {
+      ...data,
+      id: doc.id,
+      createdAt: data.createdAt?.toDate?.()?.toISOString() ?? '',
+    }
+  }) as Donation[]
 }
 
 export default async function DonationsPage() {

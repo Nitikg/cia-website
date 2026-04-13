@@ -9,7 +9,14 @@ async function getApplications(): Promise<Application[]> {
     .collection('applications')
     .orderBy('createdAt', 'desc')
     .get()
-  return snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Application[]
+  return snap.docs.map((doc) => {
+    const data = doc.data()
+    return {
+      ...data,
+      id: doc.id,
+      createdAt: data.createdAt?.toDate?.()?.toISOString() ?? '',
+    }
+  }) as Application[]
 }
 
 export default async function ApplicationsPage() {

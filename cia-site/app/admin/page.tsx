@@ -14,7 +14,10 @@ async function getDashboardData() {
     adminDb.collection('volunteers').get(),
   ])
 
-  const donations = donationsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Donation[]
+  const donations = donationsSnap.docs.map((doc) => {
+    const data = doc.data()
+    return { ...data, id: doc.id, createdAt: data.createdAt?.toDate?.()?.toISOString() ?? '' }
+  }) as Donation[]
 
   const totalRaised = donations.reduce((sum, d) => sum + d.amount, 0)
   const totalDonors = donations.length
@@ -22,7 +25,7 @@ async function getDashboardData() {
   const now = new Date()
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
   const monthRaised = donations
-    .filter((d) => d.createdAt?.toDate?.() >= monthStart)
+    .filter((d) => d.createdAt && new Date(d.createdAt) >= monthStart)
     .reduce((sum, d) => sum + d.amount, 0)
 
   const activeVolunteers = volunteersSnap.size
@@ -31,14 +34,17 @@ async function getDashboardData() {
   // Recent 5 donations
   const recentDonations = [...donations]
     .sort((a, b) => {
-      const aTime = a.createdAt?.toDate?.()?.getTime?.() ?? 0
-      const bTime = b.createdAt?.toDate?.()?.getTime?.() ?? 0
+      const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0
+      const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0
       return bTime - aTime
     })
     .slice(0, 5)
 
   // Top 3 volunteers by total raised
-  const allVolunteers = allVolunteersSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Volunteer[]
+  const allVolunteers = allVolunteersSnap.docs.map((doc) => {
+    const data = doc.data()
+    return { ...data, id: doc.id, createdAt: data.createdAt?.toDate?.()?.toISOString() ?? '' }
+  }) as Volunteer[]
   const volunteerStats = allVolunteers.map((v) => {
     const vDonations = donations.filter((d) => d.volunteerCode === v.referralCode)
     const total = vDonations.reduce((sum, d) => sum + d.amount, 0)

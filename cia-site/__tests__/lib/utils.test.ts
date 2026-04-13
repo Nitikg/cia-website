@@ -53,16 +53,14 @@ describe('formatCurrency', () => {
 })
 
 describe('formatDate', () => {
-  it('formats a Date object correctly', () => {
-    const date = new Date('2024-01-15')
-    const result = formatDate(date)
+  it('formats an ISO string correctly', () => {
+    const result = formatDate('2024-01-15T00:00:00.000Z')
     expect(result).toContain('2024')
     expect(result).toContain('Jan')
   })
 
-  it('handles a Firestore-like Timestamp object with toDate()', () => {
-    const fakeTimestamp = { toDate: () => new Date('2024-06-01') }
-    const result = formatDate(fakeTimestamp)
+  it('formats another ISO string correctly', () => {
+    const result = formatDate('2024-06-01T00:00:00.000Z')
     expect(result).toContain('2024')
     expect(result).toContain('Jun')
   })

@@ -1,5 +1,3 @@
-import { Timestamp } from 'firebase/firestore'
-
 export interface Volunteer {
   id: string
   name: string
@@ -7,7 +5,7 @@ export interface Volunteer {
   phone: string
   referralCode: string
   isActive: boolean
-  createdAt: Timestamp
+  createdAt: string
 }
 
 export interface Donation {
@@ -23,7 +21,7 @@ export interface Donation {
   razorpaySignature: string
   status: 'pending' | 'success' | 'failed'
   message?: string | null
-  createdAt: Timestamp
+  createdAt: string
 }
 
 export interface Application {
@@ -39,7 +37,7 @@ export interface Application {
   heardFrom: string
   referredBy: string | null
   status: 'pending' | 'reviewed' | 'accepted' | 'rejected'
-  createdAt: Timestamp
+  createdAt: string
 }
 
 export interface DonorFormData {

@@ -9,8 +9,14 @@ async function getData() {
     adminDb.collection('volunteers').orderBy('createdAt', 'desc').get(),
     adminDb.collection('donations').where('status', '==', 'success').get(),
   ])
-  const volunteers = volunteersSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Volunteer[]
-  const donations = donationsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Donation[]
+  const volunteers = volunteersSnap.docs.map((doc) => {
+    const data = doc.data()
+    return { ...data, id: doc.id, createdAt: data.createdAt?.toDate?.()?.toISOString() ?? '' }
+  }) as Volunteer[]
+  const donations = donationsSnap.docs.map((doc) => {
+    const data = doc.data()
+    return { ...data, id: doc.id, createdAt: data.createdAt?.toDate?.()?.toISOString() ?? '' }
+  }) as Donation[]
   return { volunteers, donations }
 }
 
